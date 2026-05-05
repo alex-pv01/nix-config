@@ -1,5 +1,12 @@
 {
-  description = "Alex' nix configuration based on Ryan Yin's";
+  description = "Alex' nix configuration for NixOS based on Ryan Yin'";
+
+  ##################################################################################################################
+  #
+  # Want to know Nix in details? Looking for a beginner-friendly tutorial?
+  # Check out https://github.com/ryan4yin/nixos-and-flakes-book !
+  #
+  ##################################################################################################################
 
   outputs = inputs: import ./outputs inputs;
 
@@ -7,150 +14,166 @@
   # for more information, see:
   #     https://nixos-and-flakes.thiscute.world/nix-store/add-binary-cache-servers
   nixConfig = {
-    # substituers will be appended to the default substituters when fetching packages
+    # substituters will be appended to the default substituters when fetching packages
     extra-substituters = [
       "https://cache.numtide.com"
       # "https://nix-gaming.cachix.org"
       # "https://nixpkgs-wayland.cachix.org"
-      # "https://install.determinate.systems"
     ];
     extra-trusted-public-keys = [
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       # "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       # "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-      # "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
     ];
   };
 
   # This is the standard format for flake.nix. `inputs` are the dependencies of the flake,
-  # Each item in `inputs` will be passed as a parameter to the `outputs` function after being pulled and built.
+  # each item in `inputs` will be passed as a parameter to the `outputs` function after being pulled and built.
   inputs = {
     # There are many ways to reference flake inputs. The most widely used is github:owner/name/reference,
     # which represents the GitHub repository URL + branch/commit-id/tag.
 
-    # Official NixOS package source, using nixos's unstable branch by default
-    # Find git commit hash with build status here(3 jobs per day):
+    # Official NixOS package source, using nixos-unstable branch by default.
+    # Find git commit hash with build status here (3 jobs per day):
     # https://hydra.nixos.org/jobset/nixpkgs/unstable
-    # update via nix flake update nixpkgs --override-input nixpkgs github:NixOS/nixpkgs/<commit-hash>
+    # update via: nix flake update nixpkgs --override-input nixpkgs github:NixOS/nixpkgs/<commit-hash>
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
-    nixpkgs-2505.url = "github:nixos/nixpkgs/nixos-25.05";
 
-    # nixpkgs with some custom patches
-    nixpkgs-patched.url = "github:ryan4yin/nixpkgs/nixos-unstable-patched";
-    # get some latest packages from the master branch
+    # Stable channel — fallback for packages that break on unstable
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
+
+    # Bleeding edge — for packages not yet in unstable
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
-    # home-manager, used for managing user configuration
+    # home-manager — managing user-level config, dotfiles, and packages
     home-manager = {
       url = "github:nix-community/home-manager/master";
-      # url = "github:nix-community/home-manager/release-25.11";
-
-      # The `follows` keyword in inputs is used for inheritance.
-      # Here, `inputs.nixpkgs` of home-manager is kept consistent with the `inputs.nixpkgs` of the current flake,
-      # to avoid problems caused by different versions of nixpkgs dependencies.
+      # keep home-manager's nixpkgs consistent with ours to avoid duplicate versions
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Hardware-specific NixOS modules — includes ASUS ROG G14 profiles
+    # https://github.com/NixOS/nixos-hardware
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+
+    # Catppuccin theme — declarative, consistent theming across all apps
     # https://github.com/catppuccin/nix
     catppuccin = {
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Secure Boot support via systemd-boot
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Persist specific paths across tmpfs reboots (impermanence companion)
     preservation = {
       url = "github:nix-community/preservation";
     };
 
-    # generate iso/qcow2/docker/... image from nixos configuration
+    # Generate ISO/qcow2/Docker/... images from NixOS configuration
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # secrets management
+
+    # Secrets management via age encryption
     agenix = {
-      # lock with git commit at May 18, 2025
+      # locked at May 18, 2025
       url = "github:ryantm/agenix/4835b1dc898959d8547a871ef484930675cb47f1";
-      # replaced with a type-safe reimplementation to get a better error message and less bugs.
-      # url = "github:ryan4yin/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Declarative disk partitioning
     disko = {
       url = "github:nix-community/disko/v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # add git hooks to format nix code before commit
+    # Git hooks to auto-format Nix code before commits
     pre-commit-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Use Nushell as a Nix build environment shell
     nuenv = {
       url = "github:DeterminateSystems/nuenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Filesystem-based module loading — auto-imports .nix files from folders
     haumea = {
       url = "github:nix-community/haumea/v0.2.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Per-app sandboxing via bubblewrap
     nixpak = {
       url = "github:nixpak/nixpak";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Fast nix-locate — find which package provides a given binary
+    # e.g.: nix-locate bin/ffmpeg
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # AI coding agent configs (Claude, Aider, etc.) for Nix projects
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
+    # -------------- 3D ---------------------
+
+    # Pre-built Blender binaries — much faster than compiling from source
     blender-bin = {
       url = "github:edolstra/nix-warez?dir=blender";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # AI coding agents
-    llm-agents.url = "github:numtide/llm-agents.nix";
-
     # -------------- Gaming ---------------------
 
+    # Optimized Wine/Proton, Steam patches, game performance tools
+    # Needed for AoE2 via Steam/Proton
     nix-gaming = {
       url = "github:fufexan/nix-gaming";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Anime Game Launcher — general gaming utilities
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix/main";
+      # note: intentionally not following nixpkgs to avoid compatibility issues
       # inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ########################  Some non-flake repositories  #########################################
+    ########################  Non-flake repositories  #########################################
 
+    # Nushell community scripts — shell completions (git, kubectl, docker, etc.)
+    # and utility functions used by utils.nu and the Justfile deployment commands
     nu_scripts = {
-      url = "github:ryan4yin/nu_scripts";
+      url = "github:nushell/nu_scripts";
       flake = false;
     };
 
     ########################  My own repositories  #########################################
 
-    # my private secrets, it's a private repository, you need to replace it with your own.
-    # use ssh protocol to authenticate via ssh-agent/ssh-key, and shallow clone to save time
+    # My private secrets repository — SSH auth via ssh-agent, shallow clone for speed
+    # To set up: create a private repo at github.com/<you>/nix-secrets
     mysecrets = {
       url = "git+ssh://git@github.com/alex-pv01/nix-secrets.git?shallow=1";
       flake = false;
     };
 
-    # my wallpapers
+    # Wallpapers — replace with your own repo when ready
+    # TODO: create github.com/alex-pv01/wallpapers and update this URL
     wallpapers = {
       url = "github:ryan4yin/wallpapers";
       flake = false;
-    };
-
-    nur-ryan4yin = {
-      url = "github:ryan4yin/nur-packages";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }
