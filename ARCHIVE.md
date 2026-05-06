@@ -137,16 +137,16 @@ git checkout 1c3827c7^ -- infra/
 
 ## Batch F — Cloud provider CLIs
 
-**Removed in:** _(SHA filled in after commit)_
+**Removed in:** `9d27518c`
 **Original paths:**
-- `home/base/tui/cloud/`
+- `home/base/tui/cloud/default.nix` — packages list
+- `home/base/tui/cloud/terraformrc` — Terraform CLI config (linked into `~/.terraformrc`)
 
 **What it was:** CLIs and tooling for AWS, Aliyun (Alibaba Cloud), Google Cloud, and
 DigitalOcean — `aws`, `aliyun`, `gcloud`, `doctl`, plus `terraformer`, `eksctl`,
 `packer`. None are useful without accounts at the corresponding providers.
 
-**Restore (single provider):**
+**Restore (whole directory, then trim what you don't want):**
 ```bash
-# Restore the whole directory, then trim what you don't want
-git checkout <sha>^ -- home/base/tui/cloud/
+git checkout 9d27518c^ -- home/base/tui/cloud/
 ```
