@@ -119,9 +119,10 @@ git checkout cec83ae0^ -- hosts/k8s/ outputs/x86_64-linux/src/k3s-*.nix outputs/
 
 ## Batch E — Infrastructure-as-Code (Terraform + MinIO)
 
-**Removed in:** _(SHA filled in after commit)_
+**Removed in:** `1c3827c7`
 **Original paths:**
-- `infra/`
+- `infra/minio/loki/` — MinIO buckets for Loki log aggregation
+- `infra/minio/tf-s3-backend/` — Terraform S3 state backend bootstrap
 
 **What it was:** Terraform modules that manage Ryan's MinIO (S3-compatible) buckets,
 Loki log-aggregation buckets, and Terraform state backend. Needs a running MinIO
@@ -129,7 +130,7 @@ server to be useful.
 
 **Restore:**
 ```bash
-git checkout <sha>^ -- infra/
+git checkout 1c3827c7^ -- infra/
 ```
 
 ---
