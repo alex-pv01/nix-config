@@ -309,9 +309,6 @@ in
         # Digital Painting
         ".local/share/krita"
 
-        # Japanese IME
-        ".config/mozc" # used by fcitx5-mozc
-
         ".config/nushell"
       ];
       files = [
