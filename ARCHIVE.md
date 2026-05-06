@@ -94,20 +94,25 @@ git checkout 3a35a331^ -- hosts/12kingdoms-shoukei outputs/aarch64-linux/src/12k
 
 ## Batch D — Homelab Kubernetes (k3s + KubeVirt)
 
-**Removed in:** _(SHA filled in after commit)_
+**Removed in:** `cec83ae0`
 **Original paths:**
-- `hosts/k3s*/`
-- `hosts/kubevirt*/`
-- `outputs/x86_64-linux/src/k3s-*.nix`
-- `outputs/x86_64-linux/src/kubevirt-*.nix`
+- `hosts/k8s/` — entire shared module tree (3 k3s prod masters, 3 prod workers, 3 test masters, 3 KubeVirt nodes, plus disko-config for KubeVirt)
+- `outputs/x86_64-linux/src/k3s-*.nix` (10 files)
+- `outputs/x86_64-linux/src/kubevirt-*.nix` (3 files)
+- `home/hosts/linux/k3s-prod-1-master-1.nix`, `home/hosts/linux/k3s-test-1-master-1.nix`
 
-**What it was:** NixOS VMs that join Ryan's homelab Kubernetes cluster (k3s control
-plane + workers) and VMs running on top of that cluster via KubeVirt (VMs-as-pods).
-Useless without his Proxmox + MinIO + k3s stack.
+Also updated:
+- `secrets/nixos.nix` — removed `server.kubernetes.enable` option, the entry from `enabledServerSecrets`, and the `(mkIf cfg.server.kubernetes.enable { ... })` block declaring `k3s-prod-1-token` and `k3s-test-1-token` age secrets
+- `outputs/x86_64-linux/tests/home-manager/{expected,expr}.nix` — dropped `"ruby"` (orphan from Batch C) and `"k3s-prod-1-master-1"` from the hosts list
+
+**What it was:** NixOS VMs joining Ryan's homelab Kubernetes cluster (k3s control
+plane + workers) and VMs running on top of that cluster via KubeVirt
+(VMs-as-Kubernetes-pods). Useless without his Proxmox + MinIO + k3s stack.
 
 **Restore:**
 ```bash
-git checkout <sha>^ -- hosts/k3s* hosts/kubevirt* outputs/x86_64-linux/src/k3s-*.nix outputs/x86_64-linux/src/kubevirt-*.nix
+git checkout cec83ae0^ -- hosts/k8s/ outputs/x86_64-linux/src/k3s-*.nix outputs/x86_64-linux/src/kubevirt-*.nix
+# (then hand-restore the secrets/nixos.nix and tests/home-manager/* edits)
 ```
 
 ---
