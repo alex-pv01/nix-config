@@ -62,20 +62,32 @@ git checkout d30690c6^ -- hardening/bwraps/ hardening/nixpaks/qq.nix
 
 ## Batch C — Other-people's hosts
 
-**Removed in:** _(SHA filled in after commit)_
+**Removed in:** `3a35a331`
 **Original paths:**
-- `hosts/idols-{kana,ruby,akane,aquamarine}/`
-- `hosts/12kingdoms-shoukei/`
-- `hosts/darwin-*/` (any macOS hosts)
-- Their corresponding `outputs/<system>/src/*.nix` registrations
+- `hosts/12kingdoms-shoukei/` (Apple Silicon NixOS laptop, aarch64)
+- `hosts/darwin-fern/`, `hosts/darwin-frieren/` (macOS)
+- `hosts/idols-akane/` (aarch64 services host)
+- `hosts/idols-aquamarine/` (services + monitoring desktop, with extensive Grafana dashboards)
+- `hosts/idols-kana/`, `hosts/idols-ruby/` (Ryan's other x86 hosts)
+- `outputs/aarch64-darwin/src/{fern,frieren}.nix`
+- `outputs/aarch64-linux/src/{12kingdoms-shoukei,idols-akane}.nix`
+- `outputs/x86_64-linux/src/{idols-aquamarine,idols-kana,idols-ruby}.nix`
+- `outputs/x86_64-linux/nixos-tests/idols-ruby.nix`
+- `home/hosts/linux/{12kingdoms-shoukei,idols-aquamarine,idols-kana,idols-ruby}.nix`
+- `home/hosts/darwin/{darwin-fern,darwin-frieren}.nix`
 
-**What it was:** Ryan's other machines — desktop variants, an M2 MacBook running
-NixOS aarch64, and macOS hosts. `hosts/idols-ai/` is intentionally **kept** as the
-fork-source for the G14 host configuration.
+Also updated:
+- `nixos-installer/flake.nix` — removed shoukei configuration and Apple Silicon inputs
+- `outputs/aarch64-linux/tests/{hostname,home-manager}/expected.nix` — dropped shoukei-niri special case
+
+**What it was:** Ryan's other machines. `hosts/idols-ai/` is **kept** as fork-source
+for the upcoming G14 host. The Grafana/Loki/VictoriaMetrics dashboards under
+`hosts/idols-aquamarine/grafana/` are useful reference material for anyone setting
+up a homelab observability stack.
 
 **Restore (example for one host):**
 ```bash
-git checkout <sha>^ -- hosts/idols-kana outputs/x86_64-linux/src/idols-kana.nix
+git checkout 3a35a331^ -- hosts/12kingdoms-shoukei outputs/aarch64-linux/src/12kingdoms-shoukei.nix home/hosts/linux/12kingdoms-shoukei.nix
 ```
 
 ---
