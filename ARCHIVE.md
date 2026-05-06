@@ -42,18 +42,20 @@ git checkout 4f7737b3^ -- home/linux/gui/base/fcitx5/ overlays/fcitx5/
 
 ## Batch B — Chinese-app sandboxes (WeChat, QQ)
 
-**Removed in:** _(SHA filled in after commit)_
+**Removed in:** `d30690c6`
 **Original paths:**
-- `hardening/bwraps/` (WeChat bubblewrap sandbox)
-- `hardening/nixpaks/qq.nix` (QQ nixpak sandbox)
+- `hardening/bwraps/` — bubblewrap WeChat sandbox + overlay
+- `hardening/nixpaks/qq.nix` — QQ nixpak sandbox
+- References pruned from: `hardening/nixpaks/default.nix`, `home/linux/gui/base/misc.nix`, `outputs/x86_64-linux/src/idols-ai.nix`
 
-**What it was:** Sandboxed wrappers for WeChat and QQ — Chinese instant-messaging
-apps. Useful as templates for sandboxing other proprietary GUI apps; otherwise dead
-weight.
+**What it was:** Sandboxed wrappers for WeChat (via bubblewrap) and QQ (via nixpak).
+Useful as templates for sandboxing other proprietary GUI apps. The Telegram and
+Firefox nixpaks remain in `hardening/nixpaks/` as cleaner examples.
 
 **Restore:**
 ```bash
-git checkout <sha>^ -- hardening/bwraps/ hardening/nixpaks/qq.nix
+git checkout d30690c6^ -- hardening/bwraps/ hardening/nixpaks/qq.nix
+# (then hand-restore the lines in nixpaks/default.nix, misc.nix, idols-ai.nix)
 ```
 
 ---
