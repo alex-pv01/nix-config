@@ -22,17 +22,20 @@ git checkout <sha>^ -- path/to/file
 
 ## Batch A — Chinese input methods (fcitx5 + rime + mozc + hangul)
 
-**Removed in:** _(SHA filled in after commit)_
+**Removed in:** `4f7737b3`
 **Original paths:**
-- `home/linux/gui/base/fcitx5/`
+- `home/linux/gui/base/fcitx5/` — fcitx5 home-manager module
+- `overlays/fcitx5/` — rime-data-flypy package overlay
+- `hosts/idols-ai/preservation.nix` — `.config/mozc` persistence line (orphan after fcitx5 removal)
 
 **What it was:** Fcitx5 input-method framework configured with Rime (flypy 小鹤音形)
-for Chinese, Mozc for Japanese, and Hangul for Korean. Useful only if you need CJK
-input — irrelevant for a Catalan/Spanish setup.
+for Chinese, Mozc for Japanese, and Hangul for Korean. The overlay overrode
+nixpkgs' `rime-data` with a custom flypy variant.
 
 **Restore:**
 ```bash
-git checkout <sha>^ -- home/linux/gui/base/fcitx5/
+git checkout 4f7737b3^ -- home/linux/gui/base/fcitx5/ overlays/fcitx5/
+# (preservation line edit can be hand-replaced from the diff)
 ```
 
 ---
