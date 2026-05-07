@@ -14,10 +14,9 @@
   # TuneD / power-profiles-daemon is active, so we do NOT enable PPD here.
   # =============================================================================
 
-  services.asusd = {
-    enable = true;
-    enableUserService = true; # so user-level asusctl can talk to the daemon
-  };
+  services.asusd.enable = true;
+  # NOTE: services.asusd.enableUserService was removed upstream — the user
+  # service is no longer needed. asusctl talks to the system daemon directly.
 
   services.supergfxd.enable = true;
 
