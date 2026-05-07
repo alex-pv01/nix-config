@@ -209,7 +209,7 @@ git checkout 30faea65^ -- nixos-installer/
 
 ## Batch H — Colmena fleet deployment + minor cleanup
 
-**Removed in:** _(SHA filled in after commit)_  
+**Removed in:** `be52000f`  
 **Original paths and edits:**
 
 - `outputs/default.nix`:
