@@ -58,16 +58,17 @@ rec {
 
     # Written to /etc/ssh/ssh_known_hosts — pre-trusted SSH host keys.
     # Add your own machines' /etc/ssh/ssh_host_ed25519_key.pub values here.
-    knownHosts = lib.attrsets.mapAttrs
-      (host: value: {
-        hostNames = [ host ] ++ (lib.optional (hostsAddr ? host) hostsAddr.${host}.ipv4);
-        publicKey = value.publicKey;
-      })
-      {
-        # GitHub's host key — verifies SSH clones/pulls/pushes.
-        # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
-        "github.com".publicKey =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
-      };
+    knownHosts =
+      lib.attrsets.mapAttrs
+        (host: value: {
+          hostNames = [ host ] ++ (lib.optional (hostsAddr ? host) hostsAddr.${host}.ipv4);
+          publicKey = value.publicKey;
+        })
+        {
+          # GitHub's host key — verifies SSH clones/pulls/pushes.
+          # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+          "github.com".publicKey =
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+        };
   };
 }
