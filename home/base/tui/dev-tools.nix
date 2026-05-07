@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-patched,
   ...
 }:
 {
@@ -31,7 +30,9 @@
 
     # ai related
     python313Packages.huggingface-hub # huggingface-cli
-    pkgs-patched.python313Packages.modelscope
+    # python313Packages.modelscope     # add back if you actually need it; the
+                                       # original used a 'pkgs-patched' alias
+                                       # that no longer exists in this fork.
     yt-dlp # youtube/bilibili/soundcloud/... video/music downloader
 
     # misc

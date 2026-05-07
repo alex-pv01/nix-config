@@ -17,30 +17,17 @@ let
     // {
       inherit mylib myvars;
 
-      # use unstable branch for some packages to get the latest updates
-      # pkgs-unstable = import inputs.nixpkgs-unstable {
-      #   inherit system; # refer the `system` parameter form outer scope recursively
-      #   # To use chrome, we need to allow the installation of non-free software
-      #   config.allowUnfree = true;
-      # };
-      pkgs-2505 = import inputs.nixpkgs-2505 {
-        inherit system;
-        # To use chrome, we need to allow the installation of non-free software
-        config.allowUnfree = true;
-      };
+      # Extra nixpkgs trees as named specialArgs. Hosts/modules can use these
+      # to pull a specific package from a different channel without changing
+      # the global pkgs. Examples:
+      #   pkgs-stable.foo  → from nixos-25.11 (stable)
+      #   pkgs-master.foo  → from nixpkgs master (bleeding-edge)
       pkgs-stable = import inputs.nixpkgs-stable {
         inherit system;
-        # To use chrome, we need to allow the installation of non-free software
-        config.allowUnfree = true;
-      };
-      pkgs-patched = import inputs.nixpkgs-patched {
-        inherit system;
-        # to use chrome, we need to allow the installation of non-free software
         config.allowUnfree = true;
       };
       pkgs-master = import inputs.nixpkgs-master {
         inherit system;
-        # to use chrome, we need to allow the installation of non-free software
         config.allowUnfree = true;
       };
 
