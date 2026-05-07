@@ -1,5 +1,8 @@
 {
-  inputs,
+  # nixos-hardware is spread into specialArgs by genSpecialArgs (see
+  # outputs/default.nix) — that's why we destructure it directly here
+  # instead of via `inputs.nixos-hardware`.
+  nixos-hardware,
   lib,
   ...
 }:
@@ -38,7 +41,7 @@ in
   imports = [
     # nixos-hardware profile for the GA401 chassis (ASUS Zephyrus G14 2021).
     # Provides sensible defaults for power, thermals, and audio quirks.
-    inputs.nixos-hardware.nixosModules.asus-zephyrus-ga401
+    nixos-hardware.nixosModules.asus-zephyrus-ga401
 
     # Hardware scan results — paste the contents of /etc/nixos/hardware-configuration.nix
     # from the live G14 install into ./hardware-configuration.nix here.
