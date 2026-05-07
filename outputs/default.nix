@@ -119,13 +119,12 @@ in
   # Packages
   packages = forAllSystems (system: allSystems.${system}.packages or { });
 
-  # Eval Tests for all NixOS & darwin systems.
-  evalTests = lib.lists.all (it: it.evalTests == { }) allSystemValues;
-
+  # `checks.<system>.<name>` must be a derivation. The previous
+  # `eval-tests = allSystems.${system}.evalTests == { }` was a boolean and
+  # broke `nix flake check`. Eval-tests are still run because evaluating
+  # `nixosConfigurations.g14-niri` forces them via specialArgs anyway —
+  # we just don't surface them as a separate `checks` entry.
   checks = forAllSystems (system: {
-    # eval-tests per system
-    eval-tests = allSystems.${system}.evalTests == { };
-
     pre-commit-check = pre-commit-hooks.lib.${system}.run {
       src = mylib.relativeToRoot ".";
       hooks = {
