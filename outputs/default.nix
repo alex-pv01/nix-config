@@ -71,45 +71,10 @@ let
   forAllSystems = func: (nixpkgs.lib.genAttrs allSystemNames func);
 in
 {
-  # Add attribute sets into outputs, for debugging
-  debugAttrs = {
-    inherit
-      nixosSystems
-      darwinSystems
-      allSystems
-      allSystemNames
-      ;
-  };
-
   # NixOS Hosts
   nixosConfigurations = lib.attrsets.mergeAttrsList (
     map (it: it.nixosConfigurations or { }) nixosSystemValues
   );
-
-  # Colmena - remote deployment via SSH
-  colmena = {
-    meta =
-      (
-        let
-          system = "x86_64-linux";
-        in
-        {
-          # colmena's default nixpkgs & specialArgs
-          nixpkgs = import nixpkgs { inherit system; };
-          specialArgs = genSpecialArgs system;
-        }
-      )
-      // {
-        # per-node nixpkgs & specialArgs
-        nodeNixpkgs = lib.attrsets.mergeAttrsList (
-          map (it: it.colmenaMeta.nodeNixpkgs or { }) nixosSystemValues
-        );
-        nodeSpecialArgs = lib.attrsets.mergeAttrsList (
-          map (it: it.colmenaMeta.nodeSpecialArgs or { }) nixosSystemValues
-        );
-      };
-  }
-  // lib.attrsets.mergeAttrsList (map (it: it.colmena or { }) nixosSystemValues);
 
   # macOS Hosts
   darwinConfigurations = lib.attrsets.mergeAttrsList (
@@ -128,7 +93,9 @@ in
     pre-commit-check = pre-commit-hooks.lib.${system}.run {
       src = mylib.relativeToRoot ".";
       hooks = {
-        nixfmt-rfc-style = {
+        # 'nixfmt-rfc-style' was renamed upstream to plain 'nixfmt' (same
+        # formatter — the old hook id just emits a deprecation warning).
+        nixfmt = {
           enable = true;
           settings.width = 100;
         };

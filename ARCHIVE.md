@@ -207,6 +207,40 @@ git checkout 30faea65^ -- nixos-installer/
 
 ---
 
+## Batch H — Colmena fleet deployment + minor cleanup
+
+**Removed in:** _(SHA filled in after commit)_  
+**Original paths and edits:**
+
+- `outputs/default.nix`:
+  - dropped the `colmena = { meta = { ... }; ... }` top-level flake output (Colmena fleet
+    deployment metadata)
+  - dropped the `debugAttrs = { ... }` top-level output (Ryan-only debug helper)
+  - renamed pre-commit hook id `nixfmt-rfc-style` → `nixfmt` (upstream rename; same formatter)
+- `outputs/x86_64-linux/default.nix`:
+  - dropped the `colmenaMeta = { nodeNixpkgs = ...; nodeSpecialArgs = ...; }` and
+    `colmena = lib.attrsets.mergeAttrsList ...` merge lines
+
+**What it was:** [Colmena](https://github.com/zhaofengli/colmena) is a multi-host NixOS
+deployment tool — like a native, parallel `nixos-rebuild --target-host`. Useful when you
+manage a fleet (Ryan had 12+ machines: k3s nodes, KubeVirt VMs, several desktops).
+Pointless for a single laptop.
+
+`debugAttrs` was a helper exposing intermediate values for `nix eval .#debugAttrs`; not
+relevant to anyone but the original author. The `nixfmt-rfc-style` rename is purely
+cosmetic — same formatter, just the new upstream hook id.
+
+**Restore:**
+
+```bash
+git checkout <sha>^ -- outputs/default.nix outputs/x86_64-linux/default.nix
+```
+
+You'd also need to install Colmena (`nix-shell -p colmena` or add it to your dev shell)
+and define your fleet under the `colmena = { ... }` flake output.
+
+---
+
 ## Design choices for the `g14` host (not removed, just deliberately omitted)
 
 These are _not in `hosts/g14/`_ — they were considered, evaluated, and skipped for the initial
