@@ -153,6 +153,35 @@ git checkout 9d27518c^ -- home/base/tui/cloud/
 
 ---
 
+## Batch G — idols-ai (former fork-source) and nixos-installer/
+
+**Removed in:** `30faea65`
+**Original paths:**
+- `hosts/idols-ai/` — Ryan's desktop config: Intel + RTX 4090, impermanence + LUKS + tmpfs root, Secure Boot via lanzaboote, second data disk, network mounts. Most of `hosts/g14/` was forked from here.
+- `outputs/x86_64-linux/src/idols-ai.nix`
+- `home/hosts/linux/idols-ai.nix`
+- `nixos-installer/` — minimal standalone flake to bootstrap a fresh NixOS install from the live ISO. Pointed at `hosts/idols-ai/{disko-fs,hardware-configuration,preservation}.nix` so it stopped working once those moved.
+
+Also updated:
+- `outputs/x86_64-linux/src/g14.nix` — nixosConfigurations key renamed `g14` → `g14-niri` to match the `<host>-<wm>` convention the Justfile `just niri` recipe expects.
+- `outputs/x86_64-linux/tests/hostname/expected.nix` — rewritten to derive `networking.hostName` by stripping `-<wm>` from each nixosConfigurations attribute name (no special-casing per host).
+- `outputs/x86_64-linux/tests/home-manager/{expected,expr}.nix` — `"ai-niri"` → `"g14-niri"`.
+- `vars/networking.nix` — `hostsAddr.ai` entry removed (orphan), map left empty with a usage example.
+
+**What it was:** `hosts/idols-ai/` is the most complete Ryan-style desktop in the repo: it shows the full impermanence + LUKS + Secure Boot stack working end-to-end. The `nixos-installer/` flake was the bootstrap helper for fresh installs from the live ISO. Recover either if you ever want to do a fresh-install + impermanence migration on the G14 (or any other machine).
+
+**Restore the desktop reference:**
+```bash
+git checkout 30faea65^ -- hosts/idols-ai outputs/x86_64-linux/src/idols-ai.nix home/hosts/linux/idols-ai.nix
+```
+
+**Restore the installer flake:**
+```bash
+git checkout 30faea65^ -- nixos-installer/
+```
+
+---
+
 ## Design choices for the `g14` host (not removed, just deliberately omitted)
 
 These are *not in `hosts/g14/`* — they were considered, evaluated, and skipped
