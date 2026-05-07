@@ -59,12 +59,15 @@ let
   };
 in
 {
+  # Naming convention: <hostname>-<wm>. The bare hostname is "g14" (set in
+  # hosts/g14/default.nix); this attribute name is what `just niri` and
+  # `nixos-rebuild switch --flake .#g14-niri` reference.
   nixosConfigurations = {
-    "${name}" = mylib.nixosSystem (modules-niri // args);
+    "${name}-niri" = mylib.nixosSystem (modules-niri // args);
   };
 
-  # Optional: build an installer ISO for this host with `nix build .#g14`.
+  # Optional: build an installer ISO for this host with `nix build .#g14-niri`.
   packages = {
-    "${name}" = inputs.self.nixosConfigurations."${name}".config.formats.iso;
+    "${name}-niri" = inputs.self.nixosConfigurations."${name}-niri".config.formats.iso;
   };
 }

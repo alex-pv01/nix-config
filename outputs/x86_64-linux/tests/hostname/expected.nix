@@ -3,14 +3,11 @@
   outputs,
 }:
 let
-  specialExpected = {
-    "ai-niri" = "ai";
-  };
-  specialHostNames = builtins.attrNames specialExpected;
-
-  otherHosts = builtins.removeAttrs outputs.nixosConfigurations specialHostNames;
-  otherHostsNames = builtins.attrNames otherHosts;
-  # other hosts's hostName is the same as the nixosConfigurations name
-  otherExpected = lib.genAttrs otherHostsNames (name: name);
+  # nixosConfigurations are named "<host>-<wm>" (e.g. "g14-niri") but
+  # networking.hostName is just "<host>" (e.g. "g14"). Strip the "-<wm>"
+  # suffix to derive the expected hostName.
+  stripWmSuffix = name: builtins.head (lib.strings.splitString "-" name);
+  hostsNames = builtins.attrNames outputs.nixosConfigurations;
+  expected = lib.genAttrs hostsNames stripWmSuffix;
 in
-(specialExpected // otherExpected)
+expected

@@ -18,18 +18,17 @@ rec {
   prefixLength = 24;
 
   # Static-IP table — only populate for hosts that actually use static IPs.
-  # Laptops typically use DHCP and don't need an entry here.
+  # Laptops typically use DHCP and don't need an entry here. Currently empty;
+  # add an entry when you have a host that wants a static IP, e.g.:
   #
-  # Existing consumers:
-  #   - hosts/idols-ai/default.nix reads hostsAddr.ai.{iface,ipv4,ipv6}
-  #     (kept temporarily as fork-source for the upcoming G14 host)
-  hostsAddr = {
-    ai = {
-      iface = "enp130s0";
-      ipv4 = "192.168.1.100";
-      ipv6 = "fe80::10";
-    };
-  };
+  #   hostsAddr = {
+  #     myserver = {
+  #       iface = "enp1s0";
+  #       ipv4 = "192.168.1.10";
+  #       ipv6 = "fe80::10";  # optional
+  #     };
+  #   };
+  hostsAddr = { };
 
   hostsInterface = lib.attrsets.mapAttrs (key: val: {
     interfaces."${val.iface}" = {
