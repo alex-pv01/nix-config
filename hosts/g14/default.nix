@@ -81,9 +81,13 @@ in
 
   console.keyMap = "es"; # TTY layout
   services.xserver.xkb = {
+    # Two layouts:
+    #   es,cat → Spanish QWERTY with Catalan dead-keys variant
+    #   us     → fallback for sites/games/CLI tools that assume US layout
+    # Toggle between them with Alt+Shift. Caps Lock is remapped to Escape.
     layout = "es,us";
-    variant = ",";
-    options = "grp:alt_shift_toggle,caps:escape"; # alt+shift toggles layouts
+    variant = "cat,";
+    options = "grp:alt_shift_toggle,caps:escape";
   };
 
   # See `man configuration.nix` before bumping this. Set once at first install,

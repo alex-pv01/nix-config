@@ -18,16 +18,11 @@
       enableOffloadCmd = true;
     };
 
-    # ============================================================
-    # TODO: replace these placeholders before first install.
-    # ============================================================
-    # On the G14, run `lspci | grep -E "VGA|3D"` and translate the bus address
-    # to the PCI:domain@bus:device:function format expected here.
-    # Example output and translation:
-    #   05:00.0 VGA compatible controller: AMD ...      → "PCI:5@0:0:0"
-    #   01:00.0 3D controller: NVIDIA ...               → "PCI:1@0:0:0"
-    amdgpuBusId = "PCI:5@0:0:0"; # PLACEHOLDER — verify on the G14
-    nvidiaBusId = "PCI:1@0:0:0"; # PLACEHOLDER — verify on the G14
+    # Bus IDs verified on the G14 via `lspci | grep -E "VGA|3D"`:
+    #   01:00.0 VGA NVIDIA GA107M [RTX 3050 Mobile]  → PCI:1@0:0:0
+    #   04:00.0 VGA AMD Cezanne [Radeon Vega]        → PCI:4@0:0:0
+    amdgpuBusId = "PCI:4@0:0:0";
+    nvidiaBusId = "PCI:1@0:0:0";
   };
 
   boot.kernelParams = [
