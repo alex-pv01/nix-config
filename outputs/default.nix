@@ -135,6 +135,13 @@ in
         # Source code spell checker
         typos = {
           enable = true;
+          # excludes is the pre-commit-hooks regex list (NOT the same as
+          # typos's own extend-exclude in .typos.toml — that one is bypassed
+          # when the hook runner passes paths directly on the command line).
+          # See the NOTE near the top of .typos.toml.
+          excludes = [
+            ".+\\.md$" # skip Markdown
+          ];
           settings = {
             write = true; # Automatically fix typos
             configPath = ".typos.toml"; # relative to the flake root

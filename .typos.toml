@@ -9,6 +9,10 @@ ignore-files = true
 extend-exclude = [
   "data/",
   "rime-data/",
+  # Skip Markdown — most .md files in this repo are Ryan's prose, not
+  # mine, and typos there are not blocking anything. Also bypassed by
+  # the pre-commit-hooks runner; see typos.excludes in outputs/default.nix.
+  "*.md",
 ]
 
 [default]
