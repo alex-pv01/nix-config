@@ -150,3 +150,54 @@ DigitalOcean — `aws`, `aliyun`, `gcloud`, `doctl`, plus `terraformer`, `eksctl
 ```bash
 git checkout 9d27518c^ -- home/base/tui/cloud/
 ```
+
+---
+
+## Design choices for the `g14` host (not removed, just deliberately omitted)
+
+These are *not in `hosts/g14/`* — they were considered, evaluated, and skipped
+for the initial install. Documented here so future-you (or anyone else) knows
+the decision was deliberate, not an oversight, and where to find templates if
+you change your mind.
+
+### Storage stack: vanilla ext4 (NOT impermanence + LUKS + btrfs)
+
+**Why:** The G14 was already installed via the standard NixOS installer with
+ext4 root, no LUKS, no tmpfs root. Adopting Ryan's impermanence/LUKS/btrfs
+pattern requires a destructive re-install (re-partition, re-format, restore
+data). The user opted to keep the working install instead.
+
+**What's missing vs. idols-ai:**
+- `hosts/g14/disko-fs.nix` — would declare GPT + ESP + LUKS2 + btrfs subvolumes
+- `hosts/g14/preservation.nix` — would bind-mount /persistent/* into a tmpfs root
+- `disko.nixosModules.default` import + `disko` argument in `hosts/g14/default.nix`
+- `modules.secrets.preservation.enable = true` flag in the host registration
+
+**Reference templates** (if you ever migrate the G14 to impermanence):
+- `git show pre-strip-upstream:hosts/idols-ai/disko-fs.nix`
+- `git show pre-strip-upstream:hosts/idols-ai/preservation.nix`
+- The phased migration would require: backup → boot installer ISO → run disko
+  destroy/format/mount on the G14's NVMe → `nixos-install --flake .#g14`
+  with the new disko-fs.nix and preservation.nix files committed to the host.
+
+### Secure Boot: deferred (NOT lanzaboote)
+
+**Why:** Secure Boot adds a per-rebuild signing step and a fragile
+key-enrollment process. The plan was to defer it until the machine is
+otherwise stable — see Phase 7 in `~/.claude/plans/i-took-ryan-yin-s-cozy-pebble.md`.
+Unlike storage layout, this can be added later without re-installing.
+
+**Reference template:**
+- `git show pre-strip-upstream:hosts/idols-ai/secureboot.nix`
+
+### Server-side / cloud secrets: not enabled at the registration
+
+**Why:** The flake's `secrets/nixos.nix` defines an option
+`modules.secrets.desktop.enable` that, when set, references age secrets
+from the user's `nix-secrets` repo. That repo is currently empty, so
+enabling this flag would cause activation to fail. Left disabled until
+the user populates secrets in Phase 7.
+
+**To enable later:** set `modules.secrets.desktop.enable = true;` in
+`outputs/x86_64-linux/src/g14.nix`, after committing the relevant `.age`
+files to your private `nix-secrets` repo.

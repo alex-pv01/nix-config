@@ -1,0 +1,26 @@
+// Niri output configuration for the G14's internal display.
+//
+// To populate this, after Niri is running on the G14:
+//
+//   niri msg outputs
+//
+// will list the connected outputs with their names, modes, and physical
+// dimensions. The internal panel on a 2021 G14 is typically named
+// "eDP-1" with a 2560×1600 mode at 120 Hz (some variants 1920×1080@144).
+//
+// Example template (adjust values to match `niri msg outputs`):
+//
+// output "eDP-1" {
+//     scale 1.5                  // 1.0 for 1080p, 1.5 or 2.0 for 1600p
+//     transform "normal"
+//     mode "2560x1600@120"       // verify with `niri msg outputs`
+//     position x=0 y=0
+// }
+//
+// External-monitor blocks can be added below, e.g.:
+//
+// output "DP-1" {
+//     scale 1.0
+//     mode "1920x1080@60"
+//     position x=2560 y=0        // to the right of the laptop panel
+// }
