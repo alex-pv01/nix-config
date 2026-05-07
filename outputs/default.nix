@@ -65,15 +65,15 @@ let
       ;
   };
 
-  # modules for each supported system
+  # modules for each supported system.
+  # Only x86_64-linux is active right now (the G14). aarch64-linux and
+  # aarch64-darwin were dropped along with their hosts; re-add an entry
+  # here AND recreate outputs/<arch>/{default.nix, src/, tests/} when you
+  # add a host on a new architecture.
   nixosSystems = {
     x86_64-linux = import ./x86_64-linux (args // { system = "x86_64-linux"; });
-    aarch64-linux = import ./aarch64-linux (args // { system = "aarch64-linux"; });
-    # riscv64-linux = import ./riscv64-linux (args // {system = "riscv64-linux";});
   };
-  darwinSystems = {
-    aarch64-darwin = import ./aarch64-darwin (args // { system = "aarch64-darwin"; });
-  };
+  darwinSystems = { };
   allSystems = nixosSystems // darwinSystems;
   allSystemNames = builtins.attrNames allSystems;
   nixosSystemValues = builtins.attrValues nixosSystems;
