@@ -19,10 +19,15 @@
     };
 
     # Bus IDs verified on the G14 via `lspci | grep -E "VGA|3D"`:
-    #   01:00.0 VGA NVIDIA GA107M [RTX 3050 Mobile]  → PCI:1@0:0:0
-    #   04:00.0 VGA AMD Cezanne [Radeon Vega]        → PCI:4@0:0:0
-    amdgpuBusId = "PCI:4@0:0:0";
-    nvidiaBusId = "PCI:1@0:0:0";
+    #   01:00.0 VGA NVIDIA GA107M [RTX 3050 Mobile]  → PCI:1:0:0
+    #   04:00.0 VGA AMD    Cezanne [Radeon Vega]    → PCI:4:0:0
+    #
+    # mkForce: nixos-hardware's asus-zephyrus-ga401 profile also sets these
+    # but its defaults (generic across GA401 variants) may not match a
+    # specific 2021 G14. Our values come from lspci on the actual hardware,
+    # so we override.
+    amdgpuBusId = lib.mkForce "PCI:4:0:0";
+    nvidiaBusId = lib.mkForce "PCI:1:0:0";
   };
 
   boot.kernelParams = [
