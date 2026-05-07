@@ -58,8 +58,8 @@ in
     useDHCP = lib.mkDefault true;
   };
 
-  # Locale, keyboard, timezone — Catalonia / Spain.
-  time.timeZone = "Europe/Madrid";
+  # Locale: Catalan (ca_ES). Timezone: Copenhagen — change if you relocate.
+  time.timeZone = "Europe/Copenhagen";
   i18n.defaultLocale = "ca_ES.UTF-8";
   i18n.extraLocaleSettings = {
     LC_TIME = "ca_ES.UTF-8";
