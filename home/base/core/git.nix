@@ -50,14 +50,12 @@
       pull.rebase = true;
       log.date = "iso"; # use iso format for date
 
-      # replace https with ssh
+      # Rewrite https://github.com/<owner> URLs to ssh:// for owners we push to,
+      # so `git clone https://...` transparently uses our SSH key for fetch+push.
       url = {
-        "ssh://git@github.com/ryan4yin" = {
-          insteadOf = "https://github.com/ryan4yin";
+        "ssh://git@github.com/alex-pv01" = {
+          insteadOf = "https://github.com/alex-pv01";
         };
-        # "ssh://git@bitbucket.com/ryan4yin" = {
-        #   insteadOf = "https://bitbucket.com/ryan4yin";
-        # };
       };
 
       alias = {

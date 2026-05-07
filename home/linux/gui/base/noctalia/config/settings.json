@@ -649,7 +649,7 @@
   },
   "wallpaper": {
     "automationEnabled": true,
-    "directory": "/home/ryan/Pictures/Wallpapers",
+    "directory": "/home/alex/Pictures/Wallpapers",
     "enableMultiMonitorDirectories": false,
     "enabled": true,
     "favorites": [],

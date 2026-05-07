@@ -1,9 +1,6 @@
 {
-  # Use an NTP server located in the mainland of China to synchronize the system time
-  networking.timeServers = [
-    "ntp.aliyun.com" # Aliyun NTP Server
-    "ntp.tencent.com" # Tencent NTP Server
-  ];
+  # Inherit NixOS's default networking.timeServers (*.nixos.pool.ntp.org —
+  # globally geo-routed). No override needed for a laptop in Europe.
 
   # dynamically update /etc/hosts for testing
   # Note that changes made in this way will be discarded when switching configurations.

@@ -1,54 +1,32 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-let
-  passwordStoreDir = "${config.xdg.dataHome}/password-store";
-in
-{
-  programs.password-store = {
-    enable = true;
-    package = pkgs.pass.withExtensions (exts: [
-      # support for one-time-password (OTP) tokens
-      # NOTE: Saving the password and OTP together runs counter to the purpose of secondary verification!
-      # exts.pass-otp
-
-      # exts.pass-import # a generic importer tool from other password managers
-      exts.pass-update # an easy flow for updating passwords
-    ]);
-    # See the “Environment variables” section of pass(1) and the extension man pages for more information about the available keys.
-    settings = {
-      PASSWORD_STORE_DIR = passwordStoreDir;
-      # Overrides the default gpg key identification set by init.
-      # Hexadecimal key signature is recommended.
-      # Multiple keys may be specified separated by spaces.
-      PASSWORD_STORE_KEY = lib.strings.concatStringsSep " " [
-        "EF824EB73CFD6CC7" # E - Ryan Yin (For pass & ssh only) <ryan4yin@linux.com>
-      ];
-      # all .gpg-id files and non-system extension files must be signed using a detached signature using the GPG key specified by
-      #   the full 40 character upper-case fingerprint in this variable.
-      # If multiple fingerprints are specified, each separated by a whitespace character, then signatures must match at least one.
-      # The init command will keep signatures of .gpg-id files up to date.
-      PASSWORD_STORE_SIGNING_KEY = lib.strings.concatStringsSep " " [
-        "C2A313F98166C942" # S - Ryan Yin (For pass & ssh only) <ryan4yin@linux.com>
-      ];
-      PASSWORD_STORE_CLIP_TIME = "60";
-      PASSWORD_STORE_GENERATED_LENGTH = "12";
-      PASSWORD_STORE_ENABLE_EXTENSIONS = "true";
-    };
-  };
-
-  # password-store extensions for browsers
-  # you need to install the browser extension for this to work
-  # https://github.com/browserpass/browserpass-extension
-  programs.browserpass = {
-    enable = true;
-    browsers = [
-      "chrome"
-      "chromium"
-      "firefox"
-    ];
-  };
+_: {
+  # ===========================================================================
+  # `pass` (password-store) is intentionally DISABLED in this fork.
+  # ===========================================================================
+  #
+  # Why: `pass` encrypts each entry as a `.gpg` file using a GPG key. The
+  # original config hardcoded Ryan's GPG key fingerprints (PASSWORD_STORE_KEY
+  # and PASSWORD_STORE_SIGNING_KEY), and the GPG module itself is disabled —
+  # see ../gpg/default.nix.
+  #
+  # ---------------------------------------------------------------------------
+  # To RE-ENABLE `pass`:
+  # ---------------------------------------------------------------------------
+  #
+  # 1. First re-enable GPG (see ../gpg/default.nix) and import your key.
+  #
+  # 2. Find your encryption-subkey and signing-subkey fingerprints:
+  #      gpg --list-keys --with-keygrip --keyid-format=long <your-email>
+  #
+  # 3. Restore the original config:
+  #      git show pre-strip-upstream:home/base/tui/password-store/default.nix \
+  #        > home/base/tui/password-store/default.nix
+  #
+  # 4. Replace Ryan's fingerprints in that file with your own:
+  #    - PASSWORD_STORE_KEY         → encryption subkey fingerprint
+  #    - PASSWORD_STORE_SIGNING_KEY → signing  subkey fingerprint
+  #
+  # 5. Rebuild: `just switch g14`. Initialize the store with:
+  #      pass init <encryption-subkey-fingerprint>
+  #
+  # ---------------------------------------------------------------------------
 }
