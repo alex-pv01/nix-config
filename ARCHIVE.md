@@ -241,6 +241,38 @@ and define your fleet under the `colmena = { ... }` flake output.
 
 ---
 
+## Batch I — All macOS / nix-darwin code
+
+**Removed in:** `a68acc51`
+**Original paths:**
+
+- `modules/darwin/` — 9 NixOS-darwin system modules (apps, ssh, users, security,
+  broken-packages, system, nix-core)
+- `home/darwin/` — 9 home-manager files (aerospace WM, proxychains, rime input,
+  shell.nix, terminal.nix)
+- `secrets/darwin.nix` — agenix declarations specific to darwin hosts
+
+Also simplified in `outputs/default.nix`:
+
+- Dropped `darwinSystems = { }` (always empty after Batch C archived all darwin hosts)
+- Dropped `darwinSystemValues` and the darwin part of `allSystemValues`
+- Dropped the `darwinConfigurations` merged output
+
+**What it was:** Cross-platform plumbing for managing macOS machines via
+[nix-darwin](https://github.com/LnL7/nix-darwin) from the same flake. Useful in Ryan's
+multi-machine setup; pure dead weight on a Linux-only laptop.
+
+**Restore (if you ever add a Mac):**
+
+```bash
+git checkout a68acc51^ -- modules/darwin/ home/darwin/ secrets/darwin.nix outputs/default.nix
+```
+
+You'd also need to add the `nix-darwin` flake input back to `flake.nix` and a darwin
+host entry under `outputs/aarch64-darwin/src/`.
+
+---
+
 ## Design choices for the `g14` host (not removed, just deliberately omitted)
 
 These are _not in `hosts/g14/`_ — they were considered, evaluated, and skipped for the initial
